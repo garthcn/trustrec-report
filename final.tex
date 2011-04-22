@@ -20,22 +20,27 @@
 \maketitle
 
 \section{Introduction}
-Recommender System is becoming a crucial part of our online experience these days. It is widely used in various websites to recommend all kinds of products to customers: movies\footnote[1]{www.flixster.com}, books\footnote[2]{www.amazon.com}, music\footnote[3]{www.pandora.com}, etc. The quality of a recommender system is not only related to user experience, but also revenues of online businesses.  
+Recommender System is becoming a crucial part of our online experience these days. It is widely used in various websites to recommend all kinds of products to customers: movies\footnote[1]{www.flixster.com}, books\footnote[2]{www.amazon.com}, music\footnote[3]{www.pandora.com}, etc. The quality of a recommender system is not only related to user experience, but also revenues of online business.  
 
-Different recommendation methods have been proposed in both industry and academia. The performance of recommender systems are usually measured in two metrics: accuracy and coverage. Higher accuracy means the estimated rating of one item for a given user is more likely to match the user's own rating of that item; higher coverage means the system is able to predict more items' ratings for more users. 
+Different recommendation methods have been proposed in both industry and academia. The performance of recommender systems is usually measured with two metrics: accuracy and coverage. Higher accuracy means the estimated rating of one item for a given user is more likely to match the user's own rating of that item; higher coverage means the system is able to predict more items' ratings for more users. 
 
-One of the most popular recommendation method is Collaborative Filtering (CF). CF compares rating profiles of all items and identify \emph{similar items} using Pearson Correlation. When asked to predict the rating of a target item for a target user, CF first finds items which are similar to the target item, then it returns the average ratings of these similar items given by the target users (weighted by their similarities to the target item). Though CF has been adopted by many websites, it performs badly for cold-start users (i.e. new users of a website). Since cold-start users have rated only a few items, it is usually difficult to find similar items rated by the target user. Therefore, coverage of CF is usually very low for cold-start users. 
+One of the most popular recommendation method is Collaborative Filtering (CF). CF compares rating profiles of all items and identify \emph{similar items} using Pearson Correlation. When asked to predict the rating of a target item for a target user, CF first finds items which are similar to the target item, then it returns the target user's average ratings of these similar items (weighted by their similarities to the target item). Though CF has been adopted by many recommender systems, it performs poorly for cold-start users (i.e. new users of a website). Since cold-start users have rated only a few items, it is often difficult for CF to find similar items rated by the target user. Therefore, coverage of CF is usually very low for cold-start users. 
 
-To overcome the low coverage of cold-start users, Mohsen and Martin (citation here) proposed a trust-based recommender system -- Trustwalker. 
+To overcome the weakness of CF on cold-start users, Mohsen Jamali and Martin Ester proposed Trustwalker (citation here). Trustwalker combines trust-based method and CF by performing a random walk on the target user's neighbours (both direct and indirect). Trustwalker managed to achieve lower Root Mean Square Error (RMSE) and higher coverage compared to traditional CF. 
 
-In this project, we propose a new recommendation method, which utilizes users' expertise in reviewing products from different categories. We pick users with higher expertise and call them \emph{experts}. Then we use experts' ratings to predict the ratings of other users. 
+To explore potential improvement in these recommender systems mentioned above, we propose a new recommendation method, which utilizes users' expertise of reviewing products from different categories. We first calculate all users' expertise based on the number and qualities of their reviews, then we pick users with the highest expertise and call them \emph{experts}. Lastly, we use experts' ratings to predict the ratings of other users. 
 
 We implemented the algorithm and tested it against a comprehensive dataset from Epinions.com. We also compared our expertise-based method with item-based Collaborative Filtering and Trustwalker. 
 
-The rest of the report is organized as follows: section 2 introduces the methodology of our experiments; section 3 reports the dataset we crawled from Epinions.com and our experiment results; section 4 concludes the project. 
+The rest of the report is organized as follows: section 2 introduces the methodology of our experiments; section 3 reports the dataset we crawled from Epinions.com and our experiment results on that dataset; section 4 concludes the project. 
 
 \section{Methodology}
 Methodology.
+\subsection{Expertise}
+Expertise is calculated based on the number and qualities of a user's reviews. We 
+
+
+
 \section{Experiment}
 Experiment.
 \subsection{Dataset}
