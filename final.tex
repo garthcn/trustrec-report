@@ -1,6 +1,7 @@
 
 \documentclass[12pt]{article}
 \usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
+\usepackage{subfig}
 \geometry{letterpaper} % or letter or a5paper or ... etc
 % \geometry{landscape} % rotated page geometry
 
@@ -15,9 +16,25 @@
 
 \maketitle
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section 1
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Introduction}
+Recommender System is becoming a crucial part of our online experience these days. It is widely used in various websites to recommend all kinds of products to customers: movies\footnote[1]{www.flixster.com}, books\footnote[2]{www.amazon.com}, music\footnote[3]{www.pandora.com}, etc. The quality of a recommender system is not only related to user experience, but also revenues of online business.  
 
-\section{Background}
-Background.
+Different recommendation methods have been proposed in both industry and academia. The performance of recommender systems is usually measured with two metrics: accuracy and coverage. Higher accuracy means the estimated rating of one item for a given user is more likely to match the user's own rating of that item; higher coverage means the system is able to predict more items' ratings for more users. 
+
+One of the most popular recommendation method is Collaborative Filtering (CF). CF compares rating profiles of all items and identify \emph{similar items} using Pearson Correlation. When asked to predict the rating of a target item for a target user, CF first finds items which are similar to the target item, then it returns the target user's average ratings of these similar items (weighted by their similarities to the target item). Though CF has been adopted by many recommender systems, it performs poorly for cold-start users (i.e. new users of a website). Since cold-start users have rated only a few items, it is often difficult for CF to find similar items rated by the target user. Therefore, coverage of CF is usually very low for cold-start users. 
+
+To overcome the weakness of CF on cold-start users, Mohsen Jamali and Martin Ester proposed Trustwalker (citation here). Trustwalker combines trust-based method and CF by performing a random walk on the target user's neighbours (both direct and indirect). Trustwalker managed to achieve lower Root Mean Square Error (RMSE) and higher coverage compared to traditional CF. 
+
+To explore potential improvement in these recommender systems mentioned above, we propose a new recommendation method, which utilizes users' expertise of reviewing products from different categories. We first calculate all users' expertise based on the number and qualities of their reviews, then we pick users with the highest expertise and call them \emph{experts}. Lastly, we use experts' ratings to predict the ratings of other users. 
+
+The rest of the report is organized as follows: section 2 introduces the methodology of our experiments; section 3 reports the dataset we crawled from Epinions.com and our experiment results on that dataset; section 4 concludes the project. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section 2
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Methodology}
 Methodology.
 
@@ -46,8 +63,81 @@ where $U_{i,j}$ is the set of common users who have rated both items $i$ and $j$
 
 % subsection expert_recommendation (end)
 
-\section{Experiment Results}
-Results.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section 3
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Experiment}
+Experiment.
+\subsection{Dataset}
+We tested different recommender systems on a comprehensive dataset from Epinions.com, which is a product reviewing site for consumers. Its product catalogue covers a large number of product categories, including Music, Books, Movies, Automobiles, Electronics, etc. For each product, consumers provide ratings on a scale from 1 to 5 (5 being the best), write detailed reviews on products and express the helpfulness of existing reviews. Besides, users can express directed trust among each other: if user A trusts user B, user B does not have to trust user A. In other words, there is a implicit directed trust graph among all users. 
+
+We crawled a comprehensive dataset from Epinions.com, which includes user info, product reviews, review helpfulness, trust links, etc. The size of the crawled dataset is shown in Table ~\ref{data_size}. Among all the 91,584 users, about 1000 users have written more than 100 reviews. These top 1000 most productive users have contributed to 55.9\% reviews (338,173 out of 605,066).  Table ~\ref{rating_distro} shows the distribution of ratings among all products. One third of the ratings are 5, and about 60\% of the ratings are 4 or 5. The distribution is very different from another popular dataset -- MovieLens, whose rating distribution is more diverse (citation here). Table ~\ref{helpful_distro} shows the helpfulnesses of all reviews. Similarly, about 75\% of all reviews are considered \emph{very helpful}. 
+
+Table ~\ref{category_distro} shows the number of reviews in the top 5 categories. The top 5 categories account for more than half of all reviews on Epinions.com.
+
+\begin{table}
+	\centering
+	\subfloat[Dataset Size\label{data_size}] {
+		\begin{tabular}[b] {| l | r | }
+			\hline
+			Data Type & Size \\ \hline \hline
+			Users & 91,584 \\ \hline
+			Reviews & 605,066 \\ \hline
+			Trust Links & 1,152,095 \\
+			\hline
+		\end{tabular}
+	}	
+	\subfloat[Rating Distribution\label{rating_distro}] {	
+		\begin{tabular}[b] {| c | r |}
+		\hline
+		Rating & Percentage \\ \hline \hline
+		5 & 33\% \\ \hline
+		4 & 27\% \\ \hline
+		3 & 20\% \\ \hline
+		2 & 13\% \\ \hline
+		1 & 7\% \\
+		\hline
+		\end{tabular}
+	}
+	\subfloat[Review Helpfulness Distribution \label{helpful_distro}] {		
+		\begin{tabular}[b] {| l | r | }
+		\hline
+		Review Helpfulness & Percentage \\ \hline \hline
+		Very Helpful & 74.3\% \\ \hline
+		Helpful & 15.4\% \\ \hline
+		Somewhat Helpful & 6.8\% \\ \hline
+		Show & 2.4\% \\ \hline
+		Not Yet Rated & 1\% \\
+		\hline
+		\end{tabular}
+	}
+
+	\caption{Dataset Summary}
+\end{table}
+
+\begin{table}[h]
+	\centering
+	\begin{tabular} {| l | c | r | }
+		\hline
+		Category & Number of Reviews & Percentage \\ \hline \hline
+		Movies & 102,461 & 16.9\% \\ \hline
+		Books & 72,940 & 12.1\% \\ \hline
+		Music & 63,424 & 10.5\% \\ \hline
+		Hotels \& Travel & 32,348 & 5.3\% \\ \hline
+		Electronics & 31,853 & 5.3\% \\
+		\hline
+	\end{tabular}
+	\caption{Product Categories of Reviews}
+	\label{category_distro}
+\end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Section 4
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion}
+Conclusion.
 
 
 \bibliographystyle{ieeetr}
@@ -55,4 +145,3 @@ Results.
 
 
 \end{document}
-
