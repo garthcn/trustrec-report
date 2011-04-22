@@ -20,6 +20,35 @@
 Background.
 \section{Methodology}
 Methodology.
+
+\subsection{Identifying Experts} % (fold)
+\label{sub:identifying_experts}
+
+Given a category $C$ and a set of users $U = \{{u_{1}, ..., u_{n}}\}$ who have written at least one review in category $C$, we primarily consider two factors in calculating a user's expertise: (1) the average quality of the user's reviews, and (2) the total number of user's reviews. We use the following formulas to calculate a user's expertise in a category $C$:
+\begin{equation}
+E(u) = \frac{\sum_{i=1}^n R_{u, i}} {n} \times f(n)
+\end{equation}
+\begin{equation}
+f(n) = \frac{1}{1 + e^{\frac{-10n} {MAX\_REVIEWS(C)}}}
+\end{equation}
+where $R_{u, i}$ is the rating for user $u$'s review $i$ in category $C$ and $f(n)$ is a sigmoid function to avoid favoring the number of reviews too much. It is based on the assumption that a user written 100 reviews has more expertise than a user written 10 while a user written written 1000 reviews is almost as good as a user written 900 reviews. $MAX\_REVIEWS(C)$ is the maximum number of reviews per user in category $C$. $f(n)$ is tailored for every category, i.e., the user who has written the most reviews in a category have $f(n)=1$.
+
+% subsection identifying_experts (end)
+
+\subsection{Top $k$ Experts Recommendation} % (fold)
+\label{sub:expert_recommendation}
+
+Previous research has demonstrated that recommending items to users based on \emph{expert} opinions as be as good as traditional user-based \emph{Collaborative Filtering} \cite{Amatriain:2009p101}.
+
+% subsection expert_recommendation (end)
+
 \section{Experiment Results}
 Results.
+
+
+\bibliographystyle{ieeetr}
+\bibliography{references}
+
+
 \end{document}
+
