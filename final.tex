@@ -73,9 +73,11 @@ where $\bar{r}_u$ is the average rating of user $u$ and $\bar{r}_e$ is the avera
 \end{equation}
 where $I_{sim}$ is the item set similar to item $i$. The recommender aggregates all the experts opinions as the final prediction for user $u$:
 \begin{equation}
-	\hat{r}_{u,i} = \frac{ \sum_{e \in E} \hat{r}_{e,i} \times E(e) } { \sum_{e \in E} E(e) }
+	\hat{r}_{u,i} = \frac{ \sum_{e \in E} \hat{r}_{e,i} \times exp(e) } { \sum_{e \in E} exp(e) }
 \end{equation}
-where $E(e)$ is the expertise of expert $e$.
+where $exp(e)$ is the expertise of expert $e$.
+
+We also implemented a simple version of top $k$ experts recommendation. In this version, when predicting a rating of item $i$ for user $u$, the recommender only consults experts who have rated item $i$. Experts who have only rated similar items of $i$ are not consulted.
  
 % subsection expert_recommendation (end)
 
