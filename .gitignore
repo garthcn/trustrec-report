@@ -1,6 +1,4 @@
-*.bbl
-*.blg
-*.gz
-*.log
-*.aux
-*.pdf
+*.*
+!*.tex
+!*.bib
+!*.png

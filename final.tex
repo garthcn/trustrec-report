@@ -2,10 +2,9 @@
 \documentclass[12pt]{article}
 \usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
 \usepackage{subfig}
+\usepackage{url}
 \usepackage{parskip}
 \usepackage{graphicx}
-
-
 \geometry{letterpaper} % or letter or a5paper or ... etc
 % \geometry{landscape} % rotated page geometry
 
@@ -45,14 +44,16 @@ Methodology.
 \subsection{Identifying Experts} % (fold)
 \label{sub:identifying_experts}
 
-Given a category $C$ and a set of users $U = \{{u_{1}, ..., u_{n}}\}$ who have written at least one review in category $C$, we primarily consider two factors in calculating a user's expertise: (1) the average quality of the user's reviews, and (2) the total number of user's reviews. We use the following formulas to calculate a user's expertise in a category $C$:
+Given a category $C$ and a set of users $U = \{{u_{1}, ..., u_{n}}\}$ who have written at least one review in category $C$, we primarily consider two factors in calculating a user's expertise: (1) the average quality of the user's reviews, and (2) the total number of user's reviews. In Epinions.com, review has a \emph{review helpfulness} assigned by users to indicate the quality of the review. The review helpfulness can be \emph{very helpful}, \emph{helpful}, \emph{somewhat helpful}, \emph{show}, and \emph{not yet rated}. We assign a rating for each review helpfulness\footnote{This rating scale is also used in this Epinions dataset: \url{http://www.trustlet.org/wiki/Extended_Epinions_dataset}}: \emph{very helpful} is 4, \emph{helpful} is 3, \emph{somewhat helpful} is 2, and \emph{show} and \emph{note yet rated} are not used because they stand for different meanings compared with the previous three. We use the following formulas to calculate a user's expertise in a category $C$:
 \begin{equation}
 E(u) = \frac{\sum_{i=1}^n R_{u, i}} {n} \times f(n)
 \end{equation}
 \begin{equation}
 f(n) = \frac{1}{1 + e^{\frac{-10n} {MAX\_REVIEWS(C)}}}
 \end{equation}
-where $R_{u, i}$ is the rating for user $u$'s review $i$ in category $C$ and $f(n)$ is a sigmoid function to avoid favoring the number of reviews too much. It is based on the assumption that a user written 100 reviews has more expertise than a user written 10 while a user written 1000 reviews is almost as good as a user written 900 reviews. $MAX\_REVIEWS(C)$ is the maximum number of reviews per user in category $C$. $f(n)$ is tailored for every category, i.e., the user who has written the most reviews in a category have $f(n)=1$.
+where $R_{u, i}$ is the rating for user $u$'s review $i$ in category $C$ and $f(n)$ is a sigmoid function to avoid favoring the number of reviews too much. It is based on the assumption that a user written 100 reviews has more expertise than a user written 10 while a user written written 1000 reviews is almost as good as a user written 900 reviews. $MAX\_REVIEWS(C)$ is the maximum number of reviews per user in category $C$. $f(n)$ is tailored for every category, i.e., the user who has written the most reviews in a category have $f(n)=1$. Expertise is normalized to the range $[0,1]$ for every category.
+
+Epinions.com has its own algorithm of identifying experts. Each user in Epinions.com may have one or more of the following titles: \emph{category lead}, \emph{top reviewer}, \emph{advisor}, \emph{popular author}. We crawled these data in our dataset. After identifying experts using our algorithm, we compared our expert set with the one crawled from Epinions.com. We found that they have great overlap, i.e., the top experts identified using our algorithm for a category are also category leads, top reviewers, or advisors for that category. We conjecture that Epinions.com may use a similar algorithm as ours for experts identification.
 
 % subsection identifying_experts (end)
 
