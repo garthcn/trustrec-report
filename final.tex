@@ -178,6 +178,8 @@ Besides two \emph{Top-k expert} methods, we also implemented item-based CF and T
 	\item \emph{expert-simple}. This is the simpler version of \emph{expert} method. It finds the top-k experts in each category, and returns the experts' weighted average ratings for the exact target item. The estimated rating is adjusted according to target user's rating scale. 
 \end{enumerate}
 
+We also implemented a version of Trustwalker which utilizes the expertise of each user, and return user's rating weighted by their expertise. However, this method performs almost exactly the same as the original Trustwalker. Thus, the results are not shown in this report. 
+
 \begin{figure}[htbp]
 	\centering
 	\subfloat[RMSE for all users]{\label{rmse_all}
@@ -188,7 +190,6 @@ Besides two \emph{Top-k expert} methods, we also implemented item-based CF and T
 			\includegraphics[width=12cm]{graphics/coldstart_user_2.png}			
 	}
 	\caption{RMSE}
-
 \end{figure}
 
 \begin{figure}[htbp]
@@ -200,28 +201,41 @@ Besides two \emph{Top-k expert} methods, we also implemented item-based CF and T
 	\subfloat[Results for cold-start users]{\label{results_cold}
 			\includegraphics[width=12cm]{graphics/coldstart_user.png}			
 	}
-	\caption{Results}
+	\caption{Coverage, precision and F Measure}
 \end{figure}
 
-Figure ~\ref{rmse_all} and ~\ref{rmse_cold} shows the \emph{RMSE} of the four methods over the entire testing set. The horizontal axis represents the percentage of users that we call experts. If the percentage is k\%, it means that we take the top k\% of users with the highest expertise in each category. Since y axis is only related to \emph{expert-simple} and \emph{expert} method, the performance of \emph{itemCF} and \emph{Trustwalker} remains the same. 
+Figure ~\ref{rmse_all} and ~\ref{rmse_cold} shows the RMSE of the four methods over the entire testing set. The horizontal axis represents the percentage of users that we call experts. If the percentage is k\%, it means that we take the top k\% of users with the highest expertise in each category. Since y axis is only related to \emph{expert-simple} and \emph{expert} method, the performance of \emph{itemCF} and \emph{Trustwalker} remains the same. 
 
-As shown in Figure ~\ref{rmse_all}, \emph{expert-simple} and \emph{expert} almost always perform better than \emph{itemCF} and \emph{Trustwalker}. This result is very surprising, since \emph{expert-simple} and \emph{expert} are relatively simple and naive methods compared to \emph{itemCF} and \emph{Trustwalker}. Besides, though the estimated ratings in \emph{expert-simple} and \emph{expert} are not personalized at all, the \emph{RMSE} over all users are still quite good. 
+As shown in Figure ~\ref{rmse_all}, \emph{expert-simple} and \emph{expert} almost always perform better than \emph{itemCF} and \emph{Trustwalker}. This result is very surprising, since \emph{expert-simple} and \emph{expert} are relatively simple and naive methods compared to \emph{itemCF} and \emph{Trustwalker}. Besides, though the estimated ratings in \emph{expert-simple} and \emph{expert} are not personalized at all, the RMSE over all users are still quite good. 
 
-Figure ~\ref{rmse_cold} shows the \emph{RMSE} of the four methods over cold-start users in the testing set. For cold-start users, \emph{itemCF} performs poorly, since it could not find many ratings for similar items from the target user's rating profile. \emph{Trustwalker} performs better than both \emph{expert-simple} and \emph{expert}. This result is expected, since \emph{Trustwalker} was designed to mitigate the cold-start user's problem. 
+Figure ~\ref{rmse_cold} shows the RMSE of the four methods over cold-start users in the testing set. For cold-start users, \emph{itemCF} performs poorly, since it could not find many ratings for similar items from the target user's rating profile. \emph{Trustwalker} performs better than both \emph{expert-simple} and \emph{expert}. This result is expected, since \emph{Trustwalker} was designed to mitigate the cold-start user's problem. 
 
 
 
-Besides \emph{RMSE}, the other most widely used metric in recommender system is \emph{coverage}. We calculated the \emph{coverage}, \emph{precision} and \emph{F Measure} of our experiment results. \emph{Precision} and \emph{F Measure} are discussed earlier in the previous section. Figure ~\ref{results_all} and ~\ref{results_cold} shows the \emph{precision}, \emph{coverage} and \emph{F measure} of all four methods over all users and cold-start users. 
+Besides RMSE, the other most widely used metric in recommender system is coverage. We calculated the coverage, precision and F Measure of our experiment results. Precision and F Measure are discussed earlier in the previous section. Figure ~\ref{results_all} and ~\ref{results_cold} shows the precision, coverage and F measure of all four methods over all users and cold-start users. 
 
-In Figure ~\ref{results_all}, \emph{F Measure} of \emph{expert} and \emph{expert-simple} are higher than \emph{Trustwalker} and \emph{itemCF}, meaning that their overall performance is better than the latter two methods. The \emph{precisions} of \emph{expert} and \emph{expert-simple} are similar to the \emph{precision} of \emph{Trustwalker}. 
+In Figure ~\ref{results_all}, F Measure of \emph{expert} and \emph{expert-simple} are higher than \emph{Trustwalker} and \emph{itemCF}, meaning that their overall performance is better than the latter two methods. The precisions of \emph{expert} and \emph{expert-simple} are similar to the precision of \emph{Trustwalker}. 
 
-Figure ~\ref{results_cold} shows the performance of the four methods on cold-start users. The \emph{coverage} of \emph{itemCF} is extremely low, which is less than 20\%. While \emph{Trustwalker} greatly improved the \emph{coverage} compared to \emph{itemCF}, \emph{expert} and \emph{expert-simple} are much better in terms of \emph{coverage}. Notice that the \emph{precision} of \emph{Trustwalker} is the highest, though its \emph{F Measure} is not as high due to its smaller \emph{coverage}. If we compare \emph{F Measure}, \emph{expert} and \emph{expert-simple} are still the two highest.
+Figure ~\ref{results_cold} shows the performance of the four methods on cold-start users. The coverage of \emph{itemCF} is extremely low, which is less than 20\%. While \emph{Trustwalker} greatly improved the coverage compared to \emph{itemCF}, \emph{expert} and \emph{expert-simple} are much better in terms of coverage. Notice that the precision of \emph{Trustwalker} is the highest, though its F Measure is not as high due to its smaller coverage. If we compare F Measure, \emph{expert} and \emph{expert-simple} are still the two highest.
+
+\begin{figure}[htbp]
+\centering
+	\includegraphics[width=12cm]{graphics/con_all_user.png}	
+	\caption{RMSE of \emph{controversial items}}
+	\label{con_all_user}
+\end{figure}
+
+Since the performance of non-personalized methods \emph{expert} and \emph{expert-simple} are surprisingly good up to now, we tested all four methods on a subset of our testing set, which only contains \emph{controversial items}. We have already defined controversial items in previous section to be the items whose ratings' Standard Deviations are greater than 1.5. We expect \emph{expert} and \emph{expert-simple} to perform worse in this dataset since they are non-personalized methods. Figure ~\ref{con_all_user} shows the RMSE of the estimated ratings for controversial items. The performance of two personalized methods \emph{itemCF} and \emph{Trustwalker} are similar to the two non-personalized methods \emph{expert} and \emph{expert-simple}. However, notice that the performance of \emph{expert} and \emph{expert-simple} has already decreased significantly. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section 4
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusion}
-Conclusion goes here.
+We calculated users' expertise using the number of qualities of their reviews. Then we pick users with highest expertise in each category and identify them as experts. We implemented two recommendation methods based on experts, and tested them against the dataset we crawled from Epinions.com. 
+
+Initially we wanted to incorporate expertise of each user into Trustwalker and improve its accuracy. However, experiments show that this method is no better than original Trustwalker. On the other hand, more naive method \emph{expert} and \emph{expert-simple} perform surprisingly well in terms of both accuracy and coverage. This could be resulted from the nature of our dataset, where ratings are clustered around 4 and 5. 
+
+Based on our experiment results, we argue that more complicated method may not be necessary in some scenarios. For example, if the reviewed products are more objective and less subjective, simply averaging experts' opinions could be comparable or better to trust-based method. For subjective products like music and movies, more complicated and personalized method usually out-performs naive averaging and are desired. 
 
 \bibliographystyle{ieeetr}
 \bibliography{references}
