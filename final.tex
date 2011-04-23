@@ -26,9 +26,9 @@
 \section{Introduction}
 Recommender System is becoming a crucial part of our online experience these days. It is widely used in various websites to recommend all kinds of products to customers: movies\footnote[1]{www.flixster.com}, books\footnote[2]{www.amazon.com}, music\footnote[3]{www.pandora.com}, etc. The quality of a recommender system is not only related to user experience, but also revenues of online business.  
 
-Different recommendation methods have been proposed in both industry and academia. The performance of recommender systems is usually measured with two metrics: accuracy and coverage. Higher accuracy means the estimated rating of one item for a given user is more likely to match the user's own rating of that item; higher coverage means the system is able to predict more items' ratings for more users. 
+Different recommendation methods have been proposed in both industry and academia. The performance of recommender systems is usually measured with two metrics: accuracy and coverage. Higher accuracy means the estimated rating of one item for target user is more likely to match the user's own rating of that item; higher coverage means the system is able to predict more items' ratings for more users. 
 
-One of the most popular recommendation method is Collaborative Filtering (CF) \cite{Sarwar:2001p125}. CF compares rating profiles of all items and identify \emph{similar items} using Pearson Correlation. When asked to predict the rating of a target item for a target user, CF first finds items which are similar to the target item, then it returns the target user's average ratings of these similar items (weighted by their similarities to the target item). Though CF has been adopted by many recommender systems, it performs poorly for cold-start users (i.e. new users of a website). Since cold-start users have rated only a few items, it is often difficult for CF to find similar items rated by the target user. Therefore, coverage of CF is usually very low for cold-start users. 
+One of the most popular recommendation method is Collaborative Filtering (CF) \cite{Sarwar:2001p125}. CF compares rating profiles of all items and identifies \emph{similar items} using Pearson Correlation. When asked to predict the rating of a target item for a target user, CF first finds items which are similar to the target item, then it returns the target user's average ratings of these similar items (weighted by their similarities to the target item). Though CF has been adopted by many recommender systems, it performs poorly for cold-start users (i.e. new users of a website). Since cold-start users have rated only a few items, it is often difficult for CF to find similar items rated by the target user. Therefore, coverage of CF is usually very low for cold-start users. 
 
 To overcome the weakness of CF on cold-start users, Mohsen Jamali and Martin Ester proposed Trustwalker \cite{Jamali:2009p67}. Trustwalker combines trust-based method and CF by performing a random walk on the target user's neighbours (both direct and indirect). Trustwalker managed to achieve lower Root Mean Square Error (RMSE) and higher coverage compared to traditional CF. 
 
@@ -40,7 +40,7 @@ The rest of the report is organized as follows: section 2 introduces the methodo
 % Section 2
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Methodology}
-Methodology.
+This section introduces the key steps in the project. 
 
 \subsection{Identifying Experts} % (fold)
 \label{sub:identifying_experts}
@@ -91,7 +91,7 @@ We also implemented a simple version of top $k$ experts recommendation. In this 
 % Section 3
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Experiment}
-We tested different recommender systems on a comprehensive dataset from Epinions.com, which is a product reviewing site for consumers. This section will report our findings in the experiments.  
+We tested different recommender systems on a comprehensive dataset from Epinions.com, which is a product reviewing site for consumers. This section reports our findings in the experiments.  
 \subsection{Dataset}
 Epinions.com is a website where users can rate products and write reviews. Its product catalogue covers a large number of product categories, including Music, Books, Movies, Automobiles, Electronics, etc. For each product, consumers provide ratings on a scale from 1 to 5 (5 being the best), write detailed reviews on products and express the helpfulness of existing reviews. Besides, users can express directed trust among each other: if user A trusts user B, user B does not have to trust user A. In other words, there is a implicit directed trust graph among all users. 
 
@@ -155,7 +155,7 @@ Table ~\ref{category_distro} shows the number of reviews in the top 5 categories
 	\label{category_distro}
 \end{table}
 
-To test the performance of recommender systems, we split the dataset into a training set and a testing set. Testing set is chosen randomly from all ratings and takes about 20\% of all ratings; training set is the rest, which is about 80\%. Then we used the training set to predict the ratings in the testing set. To make the prediction more challenging, we pick out the ratings for controversial items from the testing set and measure the performance separately for these items. We define \emph{controversial items} to be the items whose ratings' Standard Deviations are greater than 1.5. These items' ratings are harder to predict, because users' opinions towards these items varies wildly from 1 to 5. 
+To test the performance of recommender systems, we split the dataset into a training set and a testing set. Testing set is chosen randomly from all ratings and takes about 20\% of all ratings; training set is the rest, which is about 80\%. Then we used the training set to predict the ratings in the testing set. To make the prediction more challenging, we pick out the ratings for controversial items from the testing set and measure the performance separately for these items. We define \emph{controversial items} to be the items whose ratings' Standard Deviations are greater than 1.5. These items' ratings are harder to predict, because users' opinions towards these items varies wildly from 1 to 5. The reason why we set a separate testing set for controversial items is that the ratings on Epinions.com are cluster around 4 and 5. Therefore, performing another experiment on controversial items could bring more insight on how the nature of this dataset affects the recommendation methods' performance. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
