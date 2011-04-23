@@ -28,13 +28,13 @@ Recommender System is becoming a crucial part of our online experience these day
 
 Different recommendation methods have been proposed in both industry and academia. The performance of recommender systems is usually measured with two metrics: accuracy and coverage. Higher accuracy means the estimated rating of one item for target user is more likely to match the user's own rating of that item; higher coverage means the system is able to predict more items' ratings for more users. 
 
-One of the most popular recommendation method is Collaborative Filtering (CF) \cite{Sarwar:2001p125}. CF compares rating profiles of all items and identifies \emph{similar items} using Pearson Correlation. When asked to predict the rating of a target item for a target user, CF first finds items which are similar to the target item, then it returns the target user's average ratings of these similar items (weighted by their similarities to the target item). Though CF has been adopted by many recommender systems, it performs poorly for cold-start users (i.e. new users of a website). Since cold-start users have rated only a few items, it is often difficult for CF to find similar items rated by the target user. Therefore, coverage of CF is usually very low for cold-start users. 
+One of the most popular recommendation method is Collaborative Filtering (CF) \cite{Sarwar:2001p125}. CF compares rating profiles of all items and identifies \emph{similar items} using similarity measure like \emph{Pearson Correlation}. For example, in item-based CF, when asked to predict the rating of a target item for a target user, CF first finds items which are similar to the target item, then it returns the target user's average ratings of these similar items (weighted by their similarities to the target item). Though CF has been adopted by many recommender systems, it performs poorly for cold-start users (i.e. new users of a website who has rated few items). Since cold-start users have rated only a few items, it is often difficult for CF to find similar items rated by the target user. Therefore, coverage of CF is usually very low for cold-start users. 
 
-To overcome the weakness of CF on cold-start users, Mohsen Jamali and Martin Ester proposed Trustwalker \cite{Jamali:2009p67}. Trustwalker combines trust-based method and CF by performing a random walk on the target user's neighbours (both direct and indirect). Trustwalker managed to achieve lower Root Mean Square Error (RMSE) and higher coverage compared to traditional CF. 
+To overcome the weakness of CF on cold-start users, Mohsen Jamali and Martin Ester proposed Trustwalker \cite{Jamali:2009p67}. Trustwalker combines trust-based method and item-based CF by performing a random walk on the target user's neighbours (both direct and indirect). TrustWalker substantially improves the coverage of existing trust-based approaches while maintaining the same or even slightly better precision.
 
-To explore potential improvement in these recommender systems mentioned above, we propose a new recommendation method, which utilizes users' expertise in different product categories. The rationale behind this method is that experts' reviews tend to be more insightful and cover more items. Besides, according to consumer psychology, consumers tend to trust more on experts when they are purchasing more expensive products, such as cars, electronics, etc \cite{consumer}. We first calculate all users' expertise based on the number and qualities of their reviews, then we pick users with the highest expertise and call them \emph{experts}. Lastly, we use experts' ratings to predict the ratings of other users. 
+To explore potential improvement in these recommender systems mentioned above, we propose a new recommendation method, which utilizes users' expertise in different product categories. The rationale behind this method is that experts' reviews tend to be more insightful and cover more items. Besides, according to consumer psychology, consumers tend to trust more on experts when they are purchasing more expensive products, such as cars, electronics, etc \cite{consumer}. Previous research on experts identification in a social network is based on either external data source \cite{Amatriain:2009p101} or implicit user behaviour \cite{Cho:2007p102}. The Epininos dataset we crawled contains ratings for reviews, which can be used to determine the quality of reviews. We propose an expert identification algorithm using the quality and number of reviews to find out experts in a certain category. With the identified experts, we make recommendation based on their opinions.
 
-The rest of the report is organized as follows: section 2 introduces the methodology of our experiments; section 3 reports the dataset we crawled from Epinions.com and our experiment results on that dataset; section 4 concludes the project. 
+The rest of the report is organized as follows: section 2 introduces the methodology of our expert recommender; section 3 reports the dataset we crawled from Epinions.com and our experiment results on that dataset; section 4 concludes the project. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section 2
@@ -56,7 +56,7 @@ where $R_{u, i}$ is the rating for user $u$'s review $i$ in category $C$ and $f(
 
 % subsection identifying_experts (end)
 
-\subsection{Top $k$ Experts Recommendation} % (fold)
+\subsection{Top-$k$ Experts Recommendation} % (fold)
 \label{sub:expert_recommendation}
 
 Previous research has demonstrated that recommending items to users based on \emph{expert} opinions can be as good as traditional user-based \emph{Collaborative Filtering} \cite{Amatriain:2009p101}. We propose a similar expert recommendation algorithm: given an item $i$ that belongs to a category $C$, the recommender first picks out the top $k$ percent experts in category $C$; then for each expert, if the expert has rated item $i$, the exact rating is returned; otherwise a weighted average of similar items of $i$ is returned; finally the recommender averages the ratings of all selected experts by their expertise as the predicted rating for item $i$. 
@@ -67,11 +67,11 @@ Item similarity is calculated using \emph{Pearson Correlation}:
 \end{equation}
 where $U_{i,j}$ is the set of common users who have rated both items $i$ and $j$, and $\bar{r}_u$ denotes the average of ratings expressed by $u$. Pearson correlation $corr(i,j)$ is in the range $[-1,1]$. Negative correlation means that two items are correlated. Thus we only consider positive correlation.
 
-When predicting the item $i$'s rating for user $u$, the recommender consults the opinions from the set of experts $E = \{e_1, e_2, ...\}$. If expert $e$ has rated item $i$, the prediction is calculated directly as:
+When predicting the item $i$'s rating for user $u$, the recommender consults the opinions from the set of experts $E = \{e_1, e_2, ...\}$. If expert $e$ has rated the target item $i$, the prediction is calculated directly as:
 \begin{equation}
 	\hat{r}_{e,i} = \bar{r}_u + (r_{e,i} - \bar{r}_e)
 \end{equation}
-where $\bar{r}_u$ is the average rating of user $u$ and $\bar{r}_e$ is the average rating of expert $e$. If expert $e$ has not rated the item $i$, the prediction is calculated using weighted average of similar items rated by the expert:
+where $\bar{r}_u$ is the average rating of user $u$ and $\bar{r}_e$ is the average rating of expert $e$. If expert $e$ has not rated the target item $i$, the prediction is calculated using weighted average of similar items rated by the expert:
 \begin{equation}
 	\hat{r}_{e,i} = \bar{r}_u + \frac{\sum_{j \in I_{sim}} (r_{e,j} - \bar{r}_e) \times corr(i,j)} {\sum_{j \in I_{sim}} corr(i,j)}
 \end{equation}
@@ -81,7 +81,7 @@ where $I_{sim}$ is the item set similar to item $i$. The recommender aggregates 
 \end{equation}
 where $exp(e)$ is the expertise of expert $e$.
 
-We also implemented a simple version of top $k$ experts recommendation. In this version, when predicting a rating of item $i$ for user $u$, the recommender only consults experts who have rated item $i$. Experts who have only rated similar items of $i$ are not consulted.
+We also implemented a simple version of top-$k$ experts recommendation. In this version, when predicting a rating of item $i$ for user $u$, the recommender only consults experts who have rated the target item $i$. Experts who have only rated similar items of $i$ are not consulted.
  
 % subsection expert_recommendation (end)
 
@@ -161,13 +161,13 @@ To test the performance of recommender systems, we split the dataset into a trai
 
 \subsection{Evaluation Metrics}
 
-We used two most adopted metrics to measure the performance of recommender systems: Root Mean Square Error (RMSE) and coverage. In addition, we combined \emph{RMSE} and \emph{coverage} into a single metric called F Measure \cite{Jamali:2009p67}. We define \emph{precision} and \emph{F Measure} similarly:
+We used two most adopted metrics to measure the performance of recommender systems: Root Mean Square Error (RMSE) and coverage. In addition, we combined \emph{RMSE} and \emph{coverage} into a single metric called F-Measure \cite{Jamali:2009p67}. We define \emph{precision} and \emph{F-Measure} similarly:
 \begin{equation}
 Precision = 1 - \frac{RMSE}{4}
 \end{equation}
 
 \begin{equation}
-F Measure = \frac{2 \times Precision \times Coverage}{Precision + Coverage}
+F-Measure = \frac{2 \times Precision \times Coverage}{Precision + Coverage}
 \end{equation}
 
 The next subsection reports the performance of different recommender systems in the Epinions.com dataset. 
@@ -217,9 +217,9 @@ Figure \ref{fig:sub_rmse_cold} shows the RMSE of the four methods over cold-star
 
 The other most widely used metric to evaluate recommender is coverage. Figure \ref{fig:results_all} shows the precision, coverage and F measure of all four methods over all users and cold-start users. The data of \emph{expert} method is for 30\% experts. The data of \emph{expert-simple} method is for 100\% experts.
 
-In Figure \ref{fig:sub_results_all}, F Measure of both expert methods are higher than TrustWalker and item-based CF, meaning that their overall performance is better than the latter two methods. The precision and coverage of \emph{expert} method is worse than those of \emph{expert-simple} method because the data of \emph{expert} method is measured with 30\% expert percentage while that of \emph{expert-simple} is measured at 100\%. As indicated by the trend in \ref{fig:sub_rmse_all}, the RMSE of \emph{expert} would probably converge with that of \emph{expert-simple}. The coverage of both expert methods are significantly better than item-based CF and 15\% better than TrustWalker. This is because the number of experts per category is significantly larger than a user's friends.
+In Figure \ref{fig:sub_results_all}, F-Measure of both expert methods are higher than TrustWalker and item-based CF, meaning that their overall performance is better than the latter two methods. The precision and coverage of \emph{expert} method is worse than those of \emph{expert-simple} method because the data of \emph{expert} method is measured with 30\% expert percentage while that of \emph{expert-simple} is measured at 100\%. As indicated by the trend in \ref{fig:sub_rmse_all}, the RMSE of \emph{expert} would probably converge with that of \emph{expert-simple}. The coverage of both expert methods are significantly better than item-based CF and 15\% better than TrustWalker. This is because the number of experts per category is significantly larger than a user's friends.
 
-Figure \ref{fig:sub_results_cold} shows the performance of the four methods on cold-start users. The coverage of item-based CF is very low (only 15\%). TrustWalker greatly improves the coverage compared to item-based CF. Both expert methods are much better in terms of coverage because they do not differentiate between normal user and cold-start users. Thus the coverage for both types of users are almost the same. Notice that the precision of TrustWalker is the highest, though its F Measure is not as high due to its smaller coverage. If we compare F Measure, both expert methods are still the two highest.
+Figure \ref{fig:sub_results_cold} shows the performance of the four methods on cold-start users. The coverage of item-based CF is very low (only 15\%). TrustWalker greatly improves the coverage compared to item-based CF. Both expert methods are much better in terms of coverage because they do not differentiate between normal user and cold-start users. Thus the coverage for both types of users are almost the same. Notice that the precision of TrustWalker is the highest, though its F-Measure is not as high due to its smaller coverage. If we compare F-Measure, both expert methods are still the two highest.
 
 
 \begin{figure}[htbp]
@@ -231,7 +231,7 @@ Figure \ref{fig:sub_results_cold} shows the performance of the four methods on c
 	\subfloat[Results for COLD-START users on ALL items]{\label{fig:sub_results_cold}
 			\includegraphics[width=12cm]{graphics/coldstart_user.png}			
 	}
-	\caption{Coverage, Precision and F Measure for ALL Items}
+	\caption{Coverage, Precision and F-Measure for ALL Items}
 	\label{fig:results_all}
 \end{figure}
 
@@ -311,9 +311,9 @@ Since the performance of non-personalized expert methods are surprisingly good u
 \section{Conclusion}
 We calculated users' expertise using the number of qualities of their reviews. Then we pick users with highest expertise in each category and identify them as experts. We implemented two recommendation methods based on experts, and tested them against the dataset we crawled from Epinions.com. 
 
-Initially we wanted to incorporate expertise of each user into Trustwalker and improve its accuracy. However, experiments show that this method is no better than original Trustwalker. On the other hand, more naive method \emph{expert} and \emph{expert-simple} perform surprisingly well in terms of both accuracy and coverage. This could be resulted from the nature of our dataset, where ratings are clustered around 4 and 5. 
+Initially we wanted to incorporate expertise of each user into TrustWalker and improve its accuracy. However, experiments show that this method is no better than original TrustWalker. On the other hand, more naive method \emph{expert} and \emph{expert-simple} perform surprisingly well in terms of both accuracy and coverage. This could be result of the nature of our dataset, in which ratings are clustered around 4 and 5. 
 
-Based on our experiment results, we argue that more complicated method may not be necessary in some scenarios. For example, if the reviewed products are more objective and less subjective, simply averaging experts' opinions could be comparable or better to trust-based method. For subjective products like music and movies, more complicated and personalized method usually out-performs naive averaging and are desired. 
+Based on our experiment results, we believe that more complicated method may not be necessary in some scenarios. For example, if the reviewed products are more objective and less subjective, simply averaging experts' opinions could be comparable or better to trust-based method. For subjective products like music and movies, more complicated and personalized method usually outperforms simple averaging and are desired. 
 
 \bibliographystyle{ieeetr}
 \bibliography{references}
