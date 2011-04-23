@@ -224,14 +224,14 @@ Figure \ref{fig:sub_results_cold} shows the performance of the four methods on c
 
 \begin{figure}[htbp]
 	\centering
-	\subfloat[Results for all users]{\label{fig:sub_results_all}
+	\subfloat[Results for ALL users on ALL items]{\label{fig:sub_results_all}
 			\includegraphics[width=12cm]{graphics/all_user.png}			
 	}
 	\\
-	\subfloat[Results for cold-start users]{\label{fig:sub_results_cold}
+	\subfloat[Results for COLD-START users on ALL items]{\label{fig:sub_results_cold}
 			\includegraphics[width=12cm]{graphics/coldstart_user.png}			
 	}
-	\caption{Coverage, Precision and F Measure}
+	\caption{Coverage, Precision and F Measure for ALL Items}
 	\label{fig:results_all}
 \end{figure}
 
@@ -264,13 +264,13 @@ Figure \ref{fig:sub_results_cold} shows the performance of the four methods on c
 	\label{tbl:compare_all}
 \end{table}
 
-
+Since the performance of non-personalized expert methods are surprisingly good up to now, we tested all four methods on a subset of our testing set, which only contains \emph{controversial items}. We have already defined controversial items in previous section to be the items whose ratings' Standard Deviations are greater than 1.5. We expect \emph{expert} and \emph{expert-simple} to perform worse in this dataset since they are non-personalized methods and virtually give the average rating as prediction. Figure \ref{fig:con_all_user} shows the RMSE of the estimated ratings for controversial items. The performance of two personalized methods \emph{itemCF} and \emph{Trustwalker} are similar to the two non-personalized methods \emph{expert} and \emph{expert-simple}. However, notice that in Table \ref{tbl:compare_controversial} the performance of \emph{expert} and \emph{expert-simple} has already decreased significantly in terms of F-Measure compared to that in Table \ref{tbl:compare_all_all}. 
 
 
 
 \begin{table}[htbp]
 	\centering
-	\subfloat[Experimental results for ALL users and CONTROVERSIAL items \label{tbl:compare_all_controversial}]{
+	%\subfloat[Experimental results for ALL users and CONTROVERSIAL items \label{tbl:compare_all_controversial}]{
 		\begin{tabular} {| c | c | c | c |  }
 			\hline
 			Method & RMSE & Coverage(\%) & F-Measure \\ \hline \hline
@@ -280,20 +280,20 @@ Figure \ref{fig:sub_results_cold} shows the performance of the four methods on c
 			trustwalker & 1.414 & 81.13 & 0.720 \\ \hline
 			\hline
 		\end{tabular}
-	}
-	\\
-	\subfloat[Experimental results for COLD-START users and CONTROVERSIAL items \label{tbl:compare_cold_controversial}]{
-		\begin{tabular} {| c | c | c | c |  }
-			\hline
-			Method & RMSE & Coverage(\%) & F-Measure \\ \hline \hline
-			expert & 1.686 & 99.83 & 0.733 \\ \hline
-			expert-simple & 1.666 & 98.61 & 0.733 \\ \hline
-			itemCF & 1.959 & 8.98 & 0.153 \\ \hline
-			trustwalker & 1.711 & 57.34 & 0.573 \\ \hline
-			\hline
-		\end{tabular}
-	}
-	\caption{Experimental results for CONTROVERSIAL items}
+	%}
+	% \\
+	% \subfloat[Experimental results for COLD-START users and CONTROVERSIAL items \label{tbl:compare_cold_controversial}]{
+	% 	\begin{tabular} {| c | c | c | c |  }
+	% 		\hline
+	% 		Method & RMSE & Coverage(\%) & F-Measure \\ \hline \hline
+	% 		expert & 1.686 & 99.83 & 0.733 \\ \hline
+	% 		expert-simple & 1.666 & 98.61 & 0.733 \\ \hline
+	% 		itemCF & 1.959 & 8.98 & 0.153 \\ \hline
+	% 		trustwalker & 1.711 & 57.34 & 0.573 \\ \hline
+	% 		\hline
+	% 	\end{tabular}
+	% }
+	\caption{Experimental results ALL users on CONTROVERSIAL items}
 	\label{tbl:compare_controversial}
 \end{table}
 
@@ -302,11 +302,10 @@ Figure \ref{fig:sub_results_cold} shows the performance of the four methods on c
 \begin{figure}[htbp]
 \centering
 	\includegraphics[width=12cm]{graphics/con_all_user.png}	
-	\caption{RMSE of \emph{controversial items}}
+	\caption{RMSE of ALL uses on CONTROVERSIAL items}
 	\label{fig:con_all_user}
 \end{figure}
 
-Since the performance of non-personalized methods \emph{expert} and \emph{expert-simple} are surprisingly good up to now, we tested all four methods on a subset of our testing set, which only contains \emph{controversial items}. We have already defined controversial items in previous section to be the items whose ratings' Standard Deviations are greater than 1.5. We expect \emph{expert} and \emph{expert-simple} to perform worse in this dataset since they are non-personalized methods. Figure ~\ref{con_all_user} shows the RMSE of the estimated ratings for controversial items. The performance of two personalized methods \emph{itemCF} and \emph{Trustwalker} are similar to the two non-personalized methods \emph{expert} and \emph{expert-simple}. However, notice that the performance of \emph{expert} and \emph{expert-simple} has already decreased significantly. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section 4
