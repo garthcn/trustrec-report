@@ -55,12 +55,28 @@ where $R_{u, i}$ is the rating for user $u$'s review $i$ in category $C$ and $f(
 \subsection{Top $k$ Experts Recommendation} % (fold)
 \label{sub:expert_recommendation}
 
-Previous research has demonstrated that recommending items to users based on \emph{expert} opinions can be as good as traditional user-based \emph{Collaborative Filtering} \cite{Amatriain:2009p101}. We propose a similar expert recommendation algorithm: given an item $i$ that belongs to a category $C$, the recommender first picks out the top $k$ percent experts in category $C$; then for each expert, if the expert has rated item $i$, the exact rating is returned; otherwise a weighted average of similar items of $i$ is returned; finally the recommender averages the ratings of all selected experts by their expertise as the predicted rating for item $i$. Item similarity is calculated using \emph{Pearson Correlation}:
+Previous research has demonstrated that recommending items to users based on \emph{expert} opinions can be as good as traditional user-based \emph{Collaborative Filtering} \cite{Amatriain:2009p101}. We propose a similar expert recommendation algorithm: given an item $i$ that belongs to a category $C$, the recommender first picks out the top $k$ percent experts in category $C$; then for each expert, if the expert has rated item $i$, the exact rating is returned; otherwise a weighted average of similar items of $i$ is returned; finally the recommender averages the ratings of all selected experts by their expertise as the predicted rating for item $i$. 
+
+Item similarity is calculated using \emph{Pearson Correlation}:
 \begin{equation}
 	corr(i,j) = \frac{\sum_{u \in U_{i,j}} (r_{u,i} - \bar{r}_u)(r_{u,j} - \bar{r}_u)} {{\sqrt{\sum_{u \in U_{i,j}} (r_{u,i} - \bar{r}_u)}} \sqrt{\sum_{u \in U_{i,j}} (r_{u,j} - \bar{r}_u)}}
 \end{equation}
-where $U_{i,j}$ is the set of common users who have rated both items $i$ and $j$, and $\bar{r}_u$ denotes the average of ratings expressed by $u$.
+where $U_{i,j}$ is the set of common users who have rated both items $i$ and $j$, and $\bar{r}_u$ denotes the average of ratings expressed by $u$. Pearson correlation $corr(i,j)$ is in the range $[-1,1]$. Negative correlation means that two items are correlated. Thus we only consider positive correlation.
 
+When predicting the item $i$'s rating for user $u$, the recommender consults the opinions from the set of experts $E = \{e_1, e_2, ...\}$. If expert $e$ has rated item $i$, the prediction is calculated directly as:
+\begin{equation}
+	\hat{r}_{e,i} = \bar{r}_u + (r_{e,i} - \bar{r}_e)
+\end{equation}
+where $\bar{r}_u$ is the average rating of user $u$ and $\bar{r}_e$ is the average rating of expert $e$. If expert $e$ has not rated the item $i$, the prediction is calculated using weighted average of similar items rated by the expert:
+\begin{equation}
+	\hat{r}_{e,i} = \bar{r}_u + \frac{\sum_{j \in I_{sim}} (r_{e,j} - \bar{r}_e) \times corr(i,j)} {\sum_{j \in I_{sim}} corr(i,j)}
+\end{equation}
+where $I_{sim}$ is the item set similar to item $i$. The recommender aggregates all the experts opinions as the final prediction for user $u$:
+\begin{equation}
+	\hat{r}_{u,i} = \frac{ \sum_{e \in E} \hat{r}_{e,i} \times E(e) } { \sum_{e \in E} E(e) }
+\end{equation}
+where $E(e)$ is the expertise of expert $e$.
+ 
 % subsection expert_recommendation (end)
 
 
