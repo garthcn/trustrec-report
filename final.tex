@@ -3,6 +3,8 @@
 \usepackage{geometry} % see geometry.pdf on how to lay out the page. There's lots.
 \usepackage{subfig}
 \usepackage{url}
+\usepackage{parskip}
+\usepackage{graphicx}
 \geometry{letterpaper} % or letter or a5paper or ... etc
 % \geometry{landscape} % rotated page geometry
 
@@ -25,11 +27,11 @@ Recommender System is becoming a crucial part of our online experience these day
 
 Different recommendation methods have been proposed in both industry and academia. The performance of recommender systems is usually measured with two metrics: accuracy and coverage. Higher accuracy means the estimated rating of one item for a given user is more likely to match the user's own rating of that item; higher coverage means the system is able to predict more items' ratings for more users. 
 
-One of the most popular recommendation method is Collaborative Filtering (CF). CF compares rating profiles of all items and identify \emph{similar items} using Pearson Correlation. When asked to predict the rating of a target item for a target user, CF first finds items which are similar to the target item, then it returns the target user's average ratings of these similar items (weighted by their similarities to the target item). Though CF has been adopted by many recommender systems, it performs poorly for cold-start users (i.e. new users of a website). Since cold-start users have rated only a few items, it is often difficult for CF to find similar items rated by the target user. Therefore, coverage of CF is usually very low for cold-start users. 
+One of the most popular recommendation method is Collaborative Filtering (CF) \cite{Sarwar:2001p125}. CF compares rating profiles of all items and identify \emph{similar items} using Pearson Correlation. When asked to predict the rating of a target item for a target user, CF first finds items which are similar to the target item, then it returns the target user's average ratings of these similar items (weighted by their similarities to the target item). Though CF has been adopted by many recommender systems, it performs poorly for cold-start users (i.e. new users of a website). Since cold-start users have rated only a few items, it is often difficult for CF to find similar items rated by the target user. Therefore, coverage of CF is usually very low for cold-start users. 
 
-To overcome the weakness of CF on cold-start users, Mohsen Jamali and Martin Ester proposed Trustwalker (citation here). Trustwalker combines trust-based method and CF by performing a random walk on the target user's neighbours (both direct and indirect). Trustwalker managed to achieve lower Root Mean Square Error (RMSE) and higher coverage compared to traditional CF. 
+To overcome the weakness of CF on cold-start users, Mohsen Jamali and Martin Ester proposed Trustwalker \cite{Jamali:2009p67}. Trustwalker combines trust-based method and CF by performing a random walk on the target user's neighbours (both direct and indirect). Trustwalker managed to achieve lower Root Mean Square Error (RMSE) and higher coverage compared to traditional CF. 
 
-To explore potential improvement in these recommender systems mentioned above, we propose a new recommendation method, which utilizes users' expertise of reviewing products from different categories. We first calculate all users' expertise based on the number and qualities of their reviews, then we pick users with the highest expertise and call them \emph{experts}. Lastly, we use experts' ratings to predict the ratings of other users. 
+To explore potential improvement in these recommender systems mentioned above, we propose a new recommendation method, which utilizes users' expertise in different product categories. The rationale behind this method is that experts' reviews tend to be more insightful and cover more items. Besides, according to consumer psychology, consumers tend to trust more on experts when they are purchasing more expensive products, such as cars, electronics, etc \cite{consumer}. We first calculate all users' expertise based on the number and qualities of their reviews, then we pick users with the highest expertise and call them \emph{experts}. Lastly, we use experts' ratings to predict the ratings of other users. 
 
 The rest of the report is organized as follows: section 2 introduces the methodology of our experiments; section 3 reports the dataset we crawled from Epinions.com and our experiment results on that dataset; section 4 concludes the project. 
 
@@ -90,11 +92,11 @@ We also implemented a simple version of top $k$ experts recommendation. In this 
 % Section 3
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Experiment}
-Experiment.
+We tested different recommender systems on a comprehensive dataset from Epinions.com, which is a product reviewing site for consumers. This section will report our findings in the experiments.  
 \subsection{Dataset}
-We tested different recommender systems on a comprehensive dataset from Epinions.com, which is a product reviewing site for consumers. Its product catalogue covers a large number of product categories, including Music, Books, Movies, Automobiles, Electronics, etc. For each product, consumers provide ratings on a scale from 1 to 5 (5 being the best), write detailed reviews on products and express the helpfulness of existing reviews. Besides, users can express directed trust among each other: if user A trusts user B, user B does not have to trust user A. In other words, there is a implicit directed trust graph among all users. 
+Epinions.com is a website where users can rate products and write reviews. Its product catalogue covers a large number of product categories, including Music, Books, Movies, Automobiles, Electronics, etc. For each product, consumers provide ratings on a scale from 1 to 5 (5 being the best), write detailed reviews on products and express the helpfulness of existing reviews. Besides, users can express directed trust among each other: if user A trusts user B, user B does not have to trust user A. In other words, there is a implicit directed trust graph among all users. 
 
-We crawled a comprehensive dataset from Epinions.com, which includes user info, product reviews, review helpfulness, trust links, etc. The size of the crawled dataset is shown in Table ~\ref{data_size}. Among all the 91,584 users, about 1000 users have written more than 100 reviews. These top 1000 most productive users have contributed to 55.9\% reviews (338,173 out of 605,066).  Table ~\ref{rating_distro} shows the distribution of ratings among all products. One third of the ratings are 5, and about 60\% of the ratings are 4 or 5. The distribution is very different from another popular dataset -- MovieLens, whose rating distribution is more diverse (citation here). Table ~\ref{helpful_distro} shows the helpfulnesses of all reviews. Similarly, about 75\% of all reviews are considered \emph{very helpful}. 
+We crawled a comprehensive dataset from Epinions.com, which includes user info, product reviews, review helpfulness, trust links, etc. The size of the crawled dataset is shown in Table ~\ref{data_size}. Among all the 91,584 users, about 1000 users have written more than 100 reviews. These top 1000 most productive users have contributed to 55.9\% reviews (338,173 out of 605,066).  Table ~\ref{rating_distro} shows the distribution of ratings among all products. One third of the ratings are 5, and about 60\% of the ratings are 4 or 5. The distribution is very different from another popular dataset -- MovieLens, whose rating distribution is more diverse\footnote[1]{http://www.grouplens.org/node/73}. Table ~\ref{helpful_distro} shows the helpfulnesses of all reviews. Similarly, about 75\% of all reviews are considered \emph{very helpful}. 
 
 Table ~\ref{category_distro} shows the number of reviews in the top 5 categories. The top 5 categories account for more than half of all reviews on Epinions.com.
 
@@ -153,6 +155,65 @@ Table ~\ref{category_distro} shows the number of reviews in the top 5 categories
 	\caption{Product Categories of Reviews}
 	\label{category_distro}
 \end{table}
+
+To test the performance of recommender systems, we split the dataset into a training set and a testing set. Testing set is chosen randomly from all ratings and takes about 20\% of all ratings; training set is the rest, which is about 80\%. Then we used the training set to predict the ratings in the testing set. To make the prediction more challenging, we pick out the ratings for controversial items from the testing set and measure the performance separately for these items. We define \emph{controversial items} to be the items whose ratings' Standard Deviations are greater than 1.5. These items' ratings are harder to predict, because users' opinions towards these items varies wildly from 1 to 5. 
+
+We used two most adopted metrics to measure the performance of recommender systems: Root Mean Square Error (RMSE) and coverage. In addition, we combined RMSE and coverage into a single metric called F Measure \cite{Jamali:2009p67}. We define precision and F Measure similarly:
+\begin{equation}
+Precision = 1 - \frac{RMSE}{4}
+\end{equation}
+
+\begin{equation}
+F Measure = \frac{2 \times Precision \times Coverage}{Precision + Coverage}
+\end{equation}
+
+The next subsection reports the performance of different recommender systems in the Epinions.com dataset. 
+
+\subsection{Experimental Results}
+Besides two \emph{Top-k expert} methods, we also implemented item-based CF and Trustwalker to compare the performance. The four methods in our experiments are:
+
+\begin{enumerate}
+	\item \emph{itemCF}. This is the traditional CF method, which returns the weighted average ratings of similar items from target user's rating profile. 
+	\item \emph{trustwalker}. This is the random walk model proposed by Mohsen Jamali and Martin Ester \cite{Jamali:2009p67}. We set the \emph{max\_depth} to 3 and \emph{epsilon} to 0.001 in their \emph{Trustwalker} model.
+	\item \emph{expert}. This method finds the top-k experts in each category, then calculates weighted average of experts' ratings for target item and also similar items. The estimated rating is adjusted according to target user's rating scale. 
+	\item \emph{expert-simple}. This is the simpler version of \emph{expert} method. It finds the top-k experts in each category, and returns the experts' weighted average ratings for the exact target item. The estimated rating is adjusted according to target user's rating scale. 
+\end{enumerate}
+
+\begin{figure}[h]
+	\centering
+	\subfloat[RMSE for all users]{\label{rmse_all}
+			\includegraphics[width=12cm]{graphics/all_user_2.png}			
+	}
+	
+	\subfloat[RMSE for cold-start users]{\label{rmse_cold}
+			\includegraphics[width=12cm]{graphics/coldstart_user_2.png}			
+	}
+	\caption{RMSE}
+
+\end{figure}
+
+Figure ~\ref{rmse_all} and ~\ref{rmse_cold} shows the RMSE of the four methods over the entire testing set. The horizontal axis represents the percentage of users that we call experts. If the percentage is k\%, it means that we take the top k\% of users with the highest expertise in each category. Since y axis is only related to \emph{expert-simple} and \emph{expert} method, the performance of \emph{itemCF} and \emph{trustwalker} remains the same. 
+
+As shown in Figure ~\ref{rmse_all}, \emph{expert-simple} and \emph{expert} almost perform better than \emph{itemCF} and \emph{trustwalker}. This result is very surprising, since \emph{expert-simple} and \emph{expert} are relatively simple and naive compared to \emph{itemCF} and \emph{trustwalker}. Besides, though the estimated ratings in \emph{expert-simple} and \emph{expert} are not personalized, the RMSE over all users are quite good. 
+
+Figure ~\ref{rmse_cold} shows the RMSE of the four methods over cold-start users in the testing set. For cold-start users, \emph{itemCF} performs poorly, since it could not find many rated similar items from the target user's rating profile. \emph{trustwalker} performs better than both \emph{expert-simple} and \emph{expert}. This result is expected, since \emph{trustwalker} was designed to mitigate the cold-start user's problem. 
+
+One of the other most widely used metrics is coverage. Figure ~\ref{results_all} and ~\ref{results_cold} shows the precision, coverage and F measure of all four methods over all users and cold-start users. 
+
+\begin{figure}[h]
+	\centering
+	\subfloat[Results for all users]{\label{results_all}
+			\includegraphics[width=12cm]{graphics/all_user.png}			
+	}
+	
+	\subfloat[Results for cold-start users]{\label{results_cold}
+			\includegraphics[width=12cm]{graphics/coldstart_user.png}			
+	}
+	\caption{Results}
+
+\end{figure}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Section 4
